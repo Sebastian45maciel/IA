@@ -8,3 +8,6 @@ Cuatro individuos llegan a un río de noche. Hay un puente estrecho, pero este s
 debido a que es de noche, deben utilizarla cuando cruzan el puente; por lo tanto, si cruzan dos personas, uno debe volver atrás llevando la antorcha para que puedan cruzar los demás.
 El individuo A puede cruzar el puente en un minuto, el individuo B en dos minutos, el individuo C en cinco minutos, y el individuo D en ocho minutos. Cuando dos individuos cruzan el puente juntos, 
 tardan lo que tarda el más lento de ellos.
+
+# 4 reynas en un tablero de 4 por 4
+
