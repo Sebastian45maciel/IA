@@ -1,4 +1,5 @@
-##prblemas de los canibales y monjes
+##prblemas de los canibales y monjes    
+
 En el acertijo de los misioneros y los caníbales, tres misioneros y tres caníbales tienen que cruzar un río con una barca que solo puede llevar como máximo dos personas,
 lo cual es un constreñimiento para ambos bandos, porque si hay misioneros presentes en el barco, los caníbales se comerían a los misioneros. La barca no puede cruzar por el río sin personas a bordo. 
 ##problema del puente y la antorcha 
