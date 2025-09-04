@@ -11,3 +11,13 @@ tardan lo que tarda el más lento de ellos.
 
 # 4 reynas en un tablero de 4 por 4
 
+# cuadro magico
+todas las diagonales me deben de dar 15
+
+# come solo https://youtu.be/uqYLJJDrEcM?si=3oqceTPDLrRLmPJY
+saltar y las canicas tiene que estar en medio
+
+instalar python 
+sklearn
+keras
+opencv
