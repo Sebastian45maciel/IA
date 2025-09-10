@@ -21,3 +21,7 @@ instalar python
 sklearn
 keras
 opencv
+
+# problemas de dataset de la flor y de monito que salta y tu lo tienes que entrenar
+# imagen 10 de septiembre 
+plantear un posible analisis de datos en la imagen, patrones que debo buscar para ese juego, velocidad variable, pueden ser n bolita, por distancia publiana, es colision
