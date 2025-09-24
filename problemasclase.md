@@ -28,3 +28,9 @@ plantear un posible analisis de datos en la imagen, patrones que debo buscar par
 
 #juego
 variante de juego, ya esta en github. pero la variantes es 
+
+# fotos y tarea
+dia 22 de whatsapp y fotos de 24 
+matriz de convulacion
+para escalar una matriz 
+para sacar la derivada de una imagen se le aplica la convolucion
