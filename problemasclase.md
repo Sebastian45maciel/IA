@@ -34,3 +34,9 @@ dia 22 de whatsapp y fotos de 24
 matriz de convulacion
 para escalar una matriz 
 para sacar la derivada de una imagen se le aplica la convolucion
+
+# filtros de convolucion 25 sep
+![Imagen de WhatsApp 2025-09-25 a las 10 23 44_33949bd6](https://github.com/user-attachments/assets/db85c7e7-7011-462e-9b04-c7200b2022f3)
+
+foto de hoy, suavisa la imagen aqui no hay numeros negativos, va en el pivote o sea en el centro, se va cambiando con la original, todos los calculos van a ser el del centro, y para el nuevo calculo tambien es todo con lo original no con el nuevo
+
