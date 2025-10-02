@@ -1,0 +1,35 @@
+import cv2
+import numpy as np
+
+
+img = cv2.imread(r"d:\IA\figura.png")
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+
+rangos = {
+    "rojo1": [(0, 120, 70), (10, 255, 255)],
+    "rojo2": [(170, 120, 70), (180, 255, 255)],
+    "verde": [(35, 100, 100), (85, 255, 255)],
+    "azul": [(100, 100, 100), (130, 255, 255)],
+    "amarillo": [(20, 100, 100), (30, 255, 255)]
+}
+
+
+for low, high in rangos.values():
+    mask = cv2.inRange(hsv, np.array(low), np.array(high))
+    contornos, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    for c in contornos:
+        if cv2.contourArea(c) > 200:  
+            M = cv2.moments(c)
+            if M["m00"] != 0:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+                cv2.circle(img, (cx, cy), 5, (0, 0, 0), -1)  
+                cv2.putText(img, f"({cx},{cy})", (cx+5, cy-5),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+
+
+cv2.imshow("Resultado", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
