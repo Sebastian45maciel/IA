@@ -1,5 +1,5 @@
 import pygame
-from queue import PriorityQueue # Importación clave para el algoritmo A*
+from queue import PriorityQueue
 
 # Configuraciones iniciales
 ANCHO_VENTANA = 800
