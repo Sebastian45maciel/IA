@@ -1,0 +1,264 @@
+import pygame
+from queue import PriorityQueue # Importación clave para el algoritmo A*
+
+# Configuraciones iniciales
+ANCHO_VENTANA = 800
+VENTANA = pygame.display.set_mode((ANCHO_VENTANA, ANCHO_VENTANA))
+pygame.display.set_caption("Visualización de Algoritmo A*")
+
+# Colores (RGB)
+BLANCO = (255, 255, 255)
+NEGRO = (0, 0, 0)
+GRIS = (128, 128, 128)
+VERDE = (0, 255, 0) # Nodo Abierto (por evaluar)
+ROJO = (255, 0, 0) # Nodo Cerrado (ya evaluado)
+AZUL = (0, 0, 255) # Camino Final
+NARANJA = (255, 165, 0) # Inicio
+PURPURA = (128, 0, 128) # Fin
+AMARILLO = (255, 255, 0) # Auxiliar
+
+# --- Lógica de A* ---
+
+# Función Heurística (Distancia de Manhattan)
+# Estima el costo restante para llegar del nodo actual (p1) al nodo final (p2).
+def h(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return abs(x1 - x2) + abs(y1 - y2)
+
+# Reconstruye el camino desde el nodo final hasta el inicio
+def reconstruir_camino(padre, actual, dibujar):
+    while actual in padre:
+        actual = padre[actual]
+        actual.hacer_camino()
+        dibujar() # Visualiza el paso de reconstrucción del camino
+    actual.hacer_inicio() # Asegura que el inicio se mantenga naranja
+
+# Algoritmo A-Star
+def algoritmo_a_star(dibujar, grid, inicio, fin):
+    contador = 0
+    # Cola de prioridad: almacena nodos ordenados por su f-score (costo total estimado)
+    cola_prioridad = PriorityQueue()
+    # (f_score, contador, nodo)
+    cola_prioridad.put((0, contador, inicio))
+
+    # g_score: costo real del camino más corto desde el inicio hasta este nodo.
+    g_score = {nodo: float("inf") for fila in grid for nodo in fila}
+    g_score[inicio] = 0
+
+    # f_score: costo estimado total (g_score + h_score)
+    f_score = {nodo: float("inf") for fila in grid for nodo in fila}
+    f_score[inicio] = h(inicio.get_pos(), fin.get_pos())
+
+    padre = {}
+
+    # set_abierto: rastrea qué nodos están en la cola de prioridad
+    set_abierto = {inicio}
+
+    while not cola_prioridad.empty():
+        # Permite cerrar la ventana durante la ejecución del algoritmo
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        # Obtiene el nodo con el menor f_score
+        actual = cola_prioridad.get()[2]
+        set_abierto.remove(actual)
+
+        # SI ENCONTRAMOS EL FINAL
+        if actual == fin:
+            reconstruir_camino(padre, fin, dibujar)
+            fin.hacer_fin() # Asegura que el fin sea púrpura al final
+            return True
+
+        # Explorar vecinos
+        for vecino in actual.vecinos:
+            # El costo para llegar al vecino a través del nodo actual
+            temp_g_score = g_score[actual] + 1
+
+            if temp_g_score < g_score[vecino]:
+                # Encontramos un camino mejor, actualizamos sus scores y su padre
+                padre[vecino] = actual
+                g_score[vecino] = temp_g_score
+                f_score[vecino] = temp_g_score + h(vecino.get_pos(), fin.get_pos())
+                
+                if vecino not in set_abierto:
+                    contador += 1
+                    cola_prioridad.put((f_score[vecino], contador, vecino))
+                    set_abierto.add(vecino)
+                    vecino.hacer_abierto() # Visualiza como verde
+
+        dibujar() # Dibuja la cuadrícula para ver el proceso de búsqueda
+
+        # Marcar el nodo actual como cerrado (ya evaluado), a menos que sea el inicio
+        if actual != inicio:
+            actual.hacer_cerrado() # Visualiza como rojo
+
+    return False
+
+# --- Clase Nodo (Actualizada) ---
+
+class Nodo:
+    def __init__(self, fila, col, ancho, total_filas):
+        self.fila = fila
+        self.col = col
+        self.x = fila * ancho
+        self.y = col * ancho
+        self.color = BLANCO
+        self.ancho = ancho
+        self.total_filas = total_filas
+        self.vecinos = [] # Lista para almacenar nodos adyacentes
+
+    def __lt__(self, other):
+        # Necesario para comparar Nodos en la PriorityQueue
+        return False
+
+    def get_pos(self):
+        return self.fila, self.col
+    
+    # Métodos de estado (se mantiene el original del usuario)
+    def es_pared(self):
+        return self.color == NEGRO
+    def es_inicio(self):
+        return self.color == NARANJA
+    def es_fin(self):
+        return self.color == PURPURA
+    
+    # Métodos de visualización de A*
+    def restablecer(self):
+        self.color = BLANCO
+    def hacer_inicio(self):
+        self.color = NARANJA
+    def hacer_pared(self):
+        self.color = NEGRO
+    def hacer_fin(self):
+        self.color = PURPURA
+    def hacer_abierto(self):
+        self.color = VERDE
+    def hacer_cerrado(self):
+        self.color = ROJO
+    def hacer_camino(self):
+        self.color = AZUL # Camino final
+
+    # Calcula qué nodos son vecinos válidos (no son paredes ni están fuera de la cuadrícula)
+    def actualizar_vecinos(self, grid):
+        self.vecinos = []
+        # Abajo
+        if self.fila < self.total_filas - 1 and not grid[self.fila + 1][self.col].es_pared():
+            self.vecinos.append(grid[self.fila + 1][self.col])
+        # Arriba
+        if self.fila > 0 and not grid[self.fila - 1][self.col].es_pared():
+            self.vecinos.append(grid[self.fila - 1][self.col])
+        # Derecha
+        if self.col < self.total_filas - 1 and not grid[self.fila][self.col + 1].es_pared():
+            self.vecinos.append(grid[self.fila][self.col + 1])
+        # Izquierda
+        if self.col > 0 and not grid[self.fila][self.col - 1].es_pared():
+            self.vecinos.append(grid[self.fila][self.col - 1])
+
+    def dibujar(self, ventana):
+        pygame.draw.rect(ventana, self.color, (self.x, self.y, self.ancho, self.ancho))
+
+# --- Funciones de Pygame (Se mantienen del original) ---
+
+def crear_grid(filas, ancho):
+    grid = []
+    ancho_nodo = ancho // filas
+    for i in range(filas):
+        grid.append([])
+        for j in range(filas):
+            nodo = Nodo(i, j, ancho_nodo, filas)
+            grid[i].append(nodo)
+    return grid
+
+def dibujar_grid(ventana, filas, ancho):
+    ancho_nodo = ancho // filas
+    for i in range(filas):
+        pygame.draw.line(ventana, GRIS, (0, i * ancho_nodo), (ancho, i * ancho_nodo))
+        for j in range(filas):
+            pygame.draw.line(ventana, GRIS, (j * ancho_nodo, 0), (j * ancho_nodo, ancho))
+
+def dibujar(ventana, grid, filas, ancho):
+    ventana.fill(BLANCO)
+    for fila in grid:
+        for nodo in fila:
+            nodo.dibujar(ventana)
+    dibujar_grid(ventana, filas, ancho)
+    pygame.display.update()
+
+def obtener_click_pos(pos, filas, ancho):
+    ancho_nodo = ancho // filas
+    y, x = pos
+    fila = y // ancho_nodo
+    col = x // ancho_nodo
+    return fila, col
+
+# --- Función Principal (Actualizada) ---
+
+def main(ventana, ancho):
+    FILAS = 50 # Aumentado a 50 para una cuadrícula más detallada
+    grid = crear_grid(FILAS, ancho)
+    inicio = None
+    fin = None
+    corriendo = True
+    ejecutando_algoritmo = False
+
+    while corriendo:
+        dibujar(ventana, grid, FILAS, ancho)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                corriendo = False
+
+            # No permitir dibujar o borrar mientras el algoritmo se está ejecutando
+            if not ejecutando_algoritmo:
+                
+                # MANEJO DE RATÓN (Se conserva la lógica del usuario)
+                if pygame.mouse.get_pressed()[0]:  # Click izquierdo
+                    pos = pygame.mouse.get_pos()
+                    fila, col = obtener_click_pos(pos, FILAS, ancho)
+                    nodo = grid[fila][col]
+                    
+                    if not inicio and nodo != fin:
+                        inicio = nodo
+                        inicio.hacer_inicio()
+                    elif not fin and nodo != inicio:
+                        fin = nodo
+                        fin.hacer_fin()
+                    elif nodo != fin and nodo != inicio:
+                        nodo.hacer_pared()
+                        
+                elif pygame.mouse.get_pressed()[2]:  # Click derecho
+                    pos = pygame.mouse.get_pos()
+                    fila, col = obtener_click_pos(pos, FILAS, ancho)
+                    nodo = grid[fila][col]
+                    nodo.restablecer()
+                    if nodo == inicio:
+                        inicio = None
+                    elif nodo == fin:
+                        fin = None
+
+            # MANEJO DE TECLADO
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and inicio and fin:
+                    # Inicia el algoritmo A*
+                    ejecutando_algoritmo = True
+                    # 1. Actualiza los vecinos de todos los nodos antes de empezar (para incluir paredes)
+                    for fila in grid:
+                        for nodo in fila:
+                            nodo.actualizar_vecinos(grid)
+                    
+                    # 2. Ejecuta A* (se usa una función lambda para pasar la función dibujar con sus argumentos)
+                    algoritmo_a_star(lambda: dibujar(ventana, grid, FILAS, ancho), grid, inicio, fin)
+                    ejecutando_algoritmo = False
+
+                if event.key == pygame.K_c: # Limpiar cuadrícula
+                    inicio = None
+                    fin = None
+                    grid = crear_grid(FILAS, ancho)
+                    ejecutando_algoritmo = False
+
+    pygame.quit()
+
+# Inicialización
+main(VENTANA, ANCHO_VENTANA)
