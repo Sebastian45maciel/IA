@@ -25,12 +25,13 @@ debido a que es de noche, deben utilizarla cuando cruzan el puente; por lo tanto
 El individuo A puede cruzar el puente en un minuto, el individuo B en dos minutos, el individuo C en cinco minutos, y el individuo D en ocho minutos. Cuando dos individuos cruzan el puente juntos, 
 tardan lo que tarda el más lento de ellos.
 ## 
-|  # | Movimiento ( cruzan /   regresa) | Estado (Izquierda — Derecha) | Tiempo del movimiento (min) | Tiempo acumulado (min) |  Explicación                                     |
-|  1 |              A y B               |        (C, D) — (A, B)       |                           2 |                      2 | Cruzan los dos más rápidos; coste = 2.             |
-|  2 |                A                 |        (A, C, D) — (B)       |                           1 |                      3 | A regresa con la antorcha (el más rápido).         |
-|  3 |              C y D               |        (A) — (B, C, D)       |                           8 |                     11 | Los dos lentos cruzan juntos; coste = 8.           |
-|  4 |                B                 |        (A, B) — (C, D)       |                           2 |                     13 | B regresa con la antorcha (el segundo más rápido). |
-|  5 |              A y B                |     ( — ) — (A, B, C, D)     |                           2 |                     15 | A y B cruzan por última vez; coste = 2.            |
+| # | Quién cruza  / vuelve        | Tiempo del movimiento (min) | Estado (Ori — Dest) | Tiempo acumulado (min) |
+| - | ---------------------------- | --------------------------: | ------------------: | ---------------------: |
+| 1 | A y B                       |                           2 |       (C,D) — (A,B) |                      2 |
+| 2 | A                            |                           1 |       (A,C,D) — (B) |              2 + 1 = 3 |
+| 3 | C y D                        |                           8 |       (A) — (B,C,D) |             3 + 8 = 11 |
+| 4 | B                            |                           2 |       (A,B) — (C,D) |            11 + 2 = 13 |
+| 5 | A y B                        |                           2 |   ( — ) — (A,B,C,D) |            13 + 2 = 15 |
 
 # 4 reynas en un tablero de 4 por 4
 
