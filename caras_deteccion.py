@@ -1,5 +1,6 @@
 # deteccion de la cara en tiempo real
 # version de python 12
+# detenemos con la esc
 import numpy as np
 import cv2 as cv
 
