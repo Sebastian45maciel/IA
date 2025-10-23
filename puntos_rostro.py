@@ -1,3 +1,4 @@
+# reconocimeinto de letras esta
 # detecta el rostro y le pone 460 puntos
 
 import cv2
