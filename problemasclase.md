@@ -38,7 +38,6 @@ tardan lo que tarda el más lento de ellos.
 # cuadro magico
 todas las diagonales me deben de dar 15
 
-| -: | :-: | :-: |
 |  8 |  1  |  6  |
 |  3 |  5  |  7  |
 |  4 |  9  |  2  |
